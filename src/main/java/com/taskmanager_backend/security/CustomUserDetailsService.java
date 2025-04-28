@@ -1,7 +1,7 @@
-package com.rooseveltandrade.taskmanager.security;
+package com.taskmanager_backend.security;
 
-import com.rooseveltandrade.taskmanager.model.Users;
-import com.rooseveltandrade.taskmanager.repository.UserRepository;
+import com.taskmanager_backend.model.User; // Corrigido: Import da classe User
+import com.taskmanager_backend.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,10 +18,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("Usuário não encontrado: " + username);
-        }
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username)); // Corrigido: Busca o usuário no banco
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getPassword())

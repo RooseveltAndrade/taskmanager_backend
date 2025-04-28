@@ -1,8 +1,8 @@
-package com.rooseveltandrade.taskmanager.service;
+package com.taskmanager_backend.service;
 
-import com.rooseveltandrade.taskmanager.model.Task;
-import com.rooseveltandrade.taskmanager.model.TaskStatus;
-import com.rooseveltandrade.taskmanager.repository.TaskRepository;
+import com.taskmanager_backend.model.Task;
+import com.taskmanager_backend.model.TaskStatus;
+import com.taskmanager_backend.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

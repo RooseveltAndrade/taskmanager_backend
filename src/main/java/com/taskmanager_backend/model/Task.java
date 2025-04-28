@@ -1,4 +1,4 @@
-package com.rooseveltandrade.taskmanager.model;
+package com.taskmanager_backend.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;

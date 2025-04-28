@@ -1,11 +1,11 @@
-package com.rooseveltandrade.taskmanager;
+package com.taskmanager_backend;
 
-import com.rooseveltandrade.taskmanager.model.Task;
-import com.rooseveltandrade.taskmanager.model.Team;
-import com.rooseveltandrade.taskmanager.model.User;
-import com.rooseveltandrade.taskmanager.repository.TaskRepository;
-import com.rooseveltandrade.taskmanager.repository.TeamRepository;
-import com.rooseveltandrade.taskmanager.repository.UserRepository;
+import com.taskmanager_backend.model.Task;
+import com.taskmanager_backend.model.Team;
+import com.taskmanager_backend.model.User;
+import com.taskmanager_backend.repository.TaskRepository;
+import com.taskmanager_backend.repository.TeamRepository;
+import com.taskmanager_backend.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

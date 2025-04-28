@@ -1,4 +1,4 @@
-package com.rooseveltandrade.taskmanager.security;
+package com.taskmanager_backend.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -31,27 +31,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String username;
 
         try {
-            // Ignorar o endpoint de login
             if (request.getServletPath().equals("/api/auth/login")) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            // Verifica se o cabeçalho Authorization está presente e começa com "Bearer "
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            jwt = authHeader.substring(7); // Remove "Bearer " do token
-            username = jwtUtil.validateToken(jwt); // Valida o token e obtém o username
+            jwt = authHeader.substring(7);
+            username = jwtUtil.extractUsername(jwt);
 
-            // Verifica se o username é válido e se não há autenticação no contexto de segurança
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                // Valida o token novamente com o username do UserDetails
-                if (jwtUtil.validateToken(jwt).equals(userDetails.getUsername())) {
+                if (jwtUtil.validateToken(jwt, userDetails)) {
                     var authToken = new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -59,11 +55,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            // Loga o erro para facilitar a depuração
             System.err.println("Erro ao processar o token JWT: " + e.getMessage());
         }
 
-        // Continua o filtro
         filterChain.doFilter(request, response);
     }
 }

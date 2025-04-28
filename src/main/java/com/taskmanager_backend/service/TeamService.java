@@ -1,7 +1,7 @@
-package com.rooseveltandrade.taskmanager.service;
+package com.taskmanager_backend.service;
 
-import com.rooseveltandrade.taskmanager.model.Team;
-import com.rooseveltandrade.taskmanager.repository.TeamRepository;
+import com.taskmanager_backend.model.Team;
+import com.taskmanager_backend.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,12 +1,12 @@
-package com.rooseveltandrade.taskmanager.controller;
+package com.taskmanager_backend.controller;
 
-import com.rooseveltandrade.taskmanager.model.Team;
-import com.rooseveltandrade.taskmanager.model.Task;
-import com.rooseveltandrade.taskmanager.model.TaskStatus;
-import com.rooseveltandrade.taskmanager.model.User;
-import com.rooseveltandrade.taskmanager.repository.TeamRepository; // Importação adicionada
-import com.rooseveltandrade.taskmanager.repository.UserRepository;
-import com.rooseveltandrade.taskmanager.service.TaskService;
+import com.taskmanager_backend.model.Team;
+import com.taskmanager_backend.model.Task;
+import com.taskmanager_backend.model.TaskStatus;
+import com.taskmanager_backend.model.User; // Corrigido: Import da classe User
+import com.taskmanager_backend.repository.TeamRepository;
+import com.taskmanager_backend.repository.UserRepository;
+import com.taskmanager_backend.service.TaskService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,76 +18,81 @@ public class TaskController {
 
     private final TaskService taskService;
     private final UserRepository userRepository;
-    private final TeamRepository teamRepository; // Adicionada a variável teamRepository
+    private final TeamRepository teamRepository;
 
     public TaskController(TaskService taskService, UserRepository userRepository, TeamRepository teamRepository) {
         this.taskService = taskService;
         this.userRepository = userRepository;
-        this.teamRepository = teamRepository; // Inicialização do teamRepository
+        this.teamRepository = teamRepository;
     }
 
     // Retorna todas as tarefas da equipe do usuário autenticado
     @GetMapping
     public List<Task> getAllTasks(Authentication authentication) {
-        String username = authentication.getName(); // Obtém o nome do usuário autenticado
-        User user = userRepository.findByUsername(username); // Busca o usuário no banco
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalStateException("Usuário não encontrado")); // Corrigido: Busca o usuário no banco
         if (user.getTeam() == null) {
             throw new IllegalStateException("Usuário não pertence a nenhuma equipe.");
         }
-        return taskService.findTasksByTeamId(user.getTeam().getId()); // Retorna tarefas da equipe
+        return taskService.findTasksByTeamId(user.getTeam().getId());
     }
 
     // Cria uma nova tarefa associada à equipe do usuário autenticado
     @PostMapping
     public Task createTask(@RequestBody Task task, Authentication authentication) {
-        String username = authentication.getName(); // Obtém o nome do usuário autenticado
-        User user = userRepository.findByUsername(username); // Busca o usuário no banco
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalStateException("Usuário não encontrado"));
         if (user.getTeam() == null) {
             throw new IllegalStateException("Usuário não pertence a nenhuma equipe.");
         }
-        task.setTeam(user.getTeam()); // Define a equipe da tarefa
-        return taskService.saveTask(task); // Salva a tarefa
+        task.setTeam(user.getTeam());
+        return taskService.saveTask(task);
     }
 
     // Atualiza uma tarefa existente
     @PutMapping("/{id}")
     public Task updateTask(@PathVariable Long id, @RequestBody Task updatedTask, Authentication authentication) {
-        String username = authentication.getName(); // Obtém o nome do usuário autenticado
-        User user = userRepository.findByUsername(username); // Busca o usuário no banco
-        Task existingTask = taskService.findTaskById(id); // Busca a tarefa pelo ID
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalStateException("Usuário não encontrado"));
+        Task existingTask = taskService.findTaskById(id);
 
         if (existingTask == null || !existingTask.getTeam().equals(user.getTeam())) {
             throw new IllegalStateException("Você não tem permissão para editar esta tarefa.");
         }
 
-        updatedTask.setId(id); // Garante que o ID da tarefa seja mantido
-        updatedTask.setTeam(existingTask.getTeam()); // Garante que a equipe não seja alterada
-        return taskService.saveTask(updatedTask); // Atualiza a tarefa
+        updatedTask.setId(id);
+        updatedTask.setTeam(existingTask.getTeam());
+        return taskService.saveTask(updatedTask);
     }
 
     // Retorna tarefas por status da equipe do usuário autenticado
     @GetMapping("/status")
     public List<Task> getTasksByStatus(@RequestParam TaskStatus status, Authentication authentication) {
-        String username = authentication.getName(); // Obtém o nome do usuário autenticado
-        User user = userRepository.findByUsername(username); // Busca o usuário no banco
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalStateException("Usuário não encontrado"));
         if (user.getTeam() == null) {
             throw new IllegalStateException("Usuário não pertence a nenhuma equipe.");
         }
-        return taskService.findTasksByStatus(user.getTeam().getId(), status); // Retorna tarefas por status
+        return taskService.findTasksByStatus(user.getTeam().getId(), status);
     }
 
     // Atualiza o status de uma tarefa
     @PatchMapping("/{id}/status")
     public Task updateTaskStatus(@PathVariable Long id, @RequestParam TaskStatus status, Authentication authentication) {
-        String username = authentication.getName(); // Obtém o nome do usuário autenticado
-        User user = userRepository.findByUsername(username); // Busca o usuário no banco
-        Task existingTask = taskService.findTaskById(id); // Busca a tarefa pelo ID
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalStateException("Usuário não encontrado"));
+        Task existingTask = taskService.findTaskById(id);
 
         if (existingTask == null || !existingTask.getTeam().equals(user.getTeam())) {
             throw new IllegalStateException("Você não tem permissão para alterar o status desta tarefa.");
         }
 
-        return taskService.updateTaskStatus(id, status); // Atualiza o status da tarefa
+        return taskService.updateTaskStatus(id, status);
     }
 
     // Filtra tarefas por status e/ou responsável
@@ -96,14 +101,15 @@ public class TaskController {
             @RequestParam(required = false) TaskStatus status,
             @RequestParam(required = false) Long responsibleId,
             Authentication authentication) {
-        String username = authentication.getName(); // Obtém o nome do usuário autenticado
-        User user = userRepository.findByUsername(username); // Busca o usuário no banco
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalStateException("Usuário não encontrado"));
 
         if (user.getTeam() == null) {
             throw new IllegalStateException("Usuário não pertence a nenhuma equipe.");
         }
 
-        return taskService.filterTasks(user.getTeam().getId(), status, responsibleId); // Filtra as tarefas
+        return taskService.filterTasks(user.getTeam().getId(), status, responsibleId);
     }
 
     // Retorna os membros de uma equipe
@@ -111,6 +117,6 @@ public class TaskController {
     public List<User> getTeamMembers(@PathVariable Long teamId) {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new IllegalArgumentException("Equipe não encontrada"));
-        return team.getUsers(); // Retorna os membros da equipe
+        return team.getUsers();
     }
 }

@@ -1,11 +1,13 @@
-package com.roosevelttandrade.taskmanager.controller;
+package com.taskmanager_backend.controller;
 
-import com.roosevelttandrade.taskmanager.model.User;
-import com.roosevelttandrade.taskmanager.repository.UserRepository;
+import com.taskmanager_backend.model.User;
+import com.taskmanager_backend.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")

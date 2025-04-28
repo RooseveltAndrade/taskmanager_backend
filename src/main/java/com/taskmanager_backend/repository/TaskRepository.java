@@ -1,7 +1,7 @@
-package com.rooseveltandrade.taskmanager.repository;
+package com.taskmanager_backend.repository;
 
-import com.rooseveltandrade.taskmanager.model.Task;
-import com.rooseveltandrade.taskmanager.model.TaskStatus;
+import com.taskmanager_backend.model.Task;
+import com.taskmanager_backend.model.TaskStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

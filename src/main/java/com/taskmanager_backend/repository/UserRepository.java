@@ -1,6 +1,6 @@
-package com.roosevelttandrade.taskmanager.repository;
+package com.taskmanager_backend.repository;
 
-import com.roosevelttandrade.taskmanager.model.User;
+import com.taskmanager_backend.model.User; // Import correto da classe User
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

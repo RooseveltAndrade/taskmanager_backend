@@ -1,7 +1,8 @@
-package com.rooseveltandrade.taskmanager.security;
+package com.taskmanager_backend.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -29,31 +30,30 @@ public class JwtUtil {
     }
 
     /**
-     * Valida o token JWT e retorna o nome do usuário se for válido.
+     * Valida o token JWT.
+     *
+     * @param token Token JWT
+     * @param userDetails Detalhes do usuário para validação
+     * @return true se o token for válido, false caso contrário
+     */
+    public boolean validateToken(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    /**
+     * Extrai o nome do usuário (subject) do token JWT.
      *
      * @param token Token JWT
      * @return Nome do usuário (subject)
-     * @throws JwtException Se o token for inválido ou expirado
      */
-    public String validateToken(String token) {
-        try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody()
-                    .getSubject();
-        } catch (ExpiredJwtException e) {
-            throw new JwtException("Token expirado", e);
-        } catch (UnsupportedJwtException e) {
-            throw new JwtException("Token não suportado", e);
-        } catch (MalformedJwtException e) {
-            throw new JwtException("Token malformado", e);
-        } catch (SignatureException e) {
-            throw new JwtException("Assinatura inválida", e);
-        } catch (IllegalArgumentException e) {
-            throw new JwtException("Token vazio ou nulo", e);
-        }
+    public String extractUsername(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     /**

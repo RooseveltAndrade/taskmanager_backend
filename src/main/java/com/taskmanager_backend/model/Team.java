@@ -1,4 +1,4 @@
-package com.rooseveltandrade.taskmanager.model;
+package com.taskmanager_backend.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;

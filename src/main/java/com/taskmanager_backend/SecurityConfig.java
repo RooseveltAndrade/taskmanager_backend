@@ -1,6 +1,6 @@
-package com.roosevelttandrade.taskmanager;
+package com.taskmanager_backend;
 
-import com.roosevelttandrade.taskmanager.security.JwtAuthenticationFilter;
+import com.taskmanager_backend.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,16 +28,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Desativa CSRF
-                .cors() // Habilita o CORS
+                .csrf(csrf -> csrf.disable())
+                .cors()
                 .and()
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/h2-console/**").permitAll() // Permite acesso ao login e H2 Console
-                        .requestMatchers("/api/tasks/**").authenticated() // Requer autenticação para tarefas
-                        .anyRequest().authenticated() // Protege outros endpoints
+                        .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
+                        .requestMatchers("/api/tasks/**", "/api/users/**").authenticated()
+                        .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Adiciona o filtro JWT
-                .headers(headers -> headers.frameOptions().disable()); // Permite que o H2 Console funcione em frames
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .headers(headers -> headers.frameOptions().disable());
         return http.build();
     }
 
@@ -48,7 +48,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Configura o BCrypt para criptografar senhas
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -56,9 +56,9 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:3000")); // URL do React
-        config.setAllowedHeaders(List.of("*")); // Permite todos os cabeçalhos
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")); // Permite todos os métodos HTTP
+        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
