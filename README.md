@@ -1,3 +1,7 @@
+
+Abaixo está a arquitetura de dados do sistema:
+![Arquitetura do Sistema](https://github.com/user-attachments/assets/829591a6-e02e-4fc6-bb0b-685a2b30bbd0)
+
 # Backend - Gerenciador de Tarefas
 
 Este é o backend do sistema de Gerenciamento de Tarefas, responsável por fornecer APIs para autenticação, gerenciamento de usuários, equipes e tarefas.
