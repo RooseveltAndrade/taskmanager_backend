@@ -13,19 +13,19 @@ public class TeamService {
     private TeamRepository teamRepository;
 
     public Team saveTeam(Team team) {
-        return teamRepository.save(team);
+        return teamRepository.saveTeam(team);
     }
 
     public List<Team> findAllTeams() {
-        return teamRepository.findAll();
+        return teamRepository.findAllTeams();
     }
 
     public Team findTeamById(Long id) {
-        return teamRepository.findById(id).orElseThrow(() -> new RuntimeException("Team not found"));
+        return teamRepository.findByIdTeam(id).orElseThrow(() -> new RuntimeException("Team not found"));
     }
 
     public void deleteTeam(Long id) {
-        teamRepository.deleteById(id);
+        teamRepository.deleteByIdTeam(id);
     }
     
 }

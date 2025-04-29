@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:3000") // Permite requisições do frontend
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -28,6 +29,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
         try {
+            // Log para depuração
+            System.out.println("Tentativa de login para o usuário: " + authRequest.getUsername());
+
             // Autentica o usuário
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
@@ -45,7 +49,9 @@ public class AuthController {
             // Retorna o token e o userId
             return ResponseEntity.ok(new AuthResponse(token, user.getId()));
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(401).body("Credenciais inválidas");
+            // Log para depuração em caso de erro
+            System.err.println("Erro de autenticação: " + e.getMessage());
+            return ResponseEntity.status(401).body(new ErrorResponse("Credenciais inválidas. Verifique seu username e senha."));
         }
     }
 }
@@ -97,5 +103,22 @@ class AuthResponse {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+}
+
+// Classe para a resposta de erro
+class ErrorResponse {
+    private String message;
+
+    public ErrorResponse(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
