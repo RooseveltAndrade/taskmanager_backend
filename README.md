@@ -81,6 +81,7 @@ PUT /tasks/{id}: Atualiza uma tarefa existente.
 DELETE /tasks/{id}: Remove uma tarefa.
 
 🧪 Testes
+
 Testes de integração e unitários foram implementados para garantir a qualidade do código.
 Para rodar os testes:
 mvn test
